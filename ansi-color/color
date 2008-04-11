@@ -13,9 +13,9 @@ function help {
 	echo "$(color bd)Conveniently named ANSI escape sequences for your shell scripts.$(color off)";
 	echo;
 	echo 'Usage:';
-	echo "$(color bd)build$(color off) [b]$(color ul)fgcolor$(color off) [$(color ul)bgcolor$(color off)]";
-	echo "$(color bd)build$(color off) [ bd | bold | ul | underline | bk | blink | rv | reversevideo | off ]";
-	echo "$(color bd)build$(color off) list";
+	echo "$(color bd)color$(color off) [b]$(color ul)fgcolor$(color off) [$(color ul)bgcolor$(color off)]";
+	echo "$(color bd)color$(color off) [ bd | bold | ul | underline | bk | blink | rv | reversevideo | off ]";
+	echo "$(color bd)color$(color off) list";
 	echo;
 	echo 'where:';
 	echo -n "$(color ul)fgcolor$(color off) and $(color ul)fgcolor$(color off) are one of ";
