@@ -4,127 +4,201 @@
 # Return ANSI color escape sequences.
 # Ref: http://www.faqs.org/docs/abs/HTML/colorizing.html,
 # http://isthe.com/chongo/tech/comp/ansi_escapes.html
-# Usage syntax based on original work by Moshe Jacobson <moshe@runslinux.net>
+# Inspired by Moshe Jacobson <moshe@runslinux.net>
 # @author Alister Lewis-Bowen [alister@different.com]
+# ----------------------------------------------------------------------------
+
+COLORS=( black red green yellow blue magenta cyan white );
+NUM_COLORS=${#COLORS[@]};
+TREATMENTS=( nm normal bd bold ft faint st standout ul underline bk blink rv reversevideo iv invisible );
+NUM_TREATMENTS=${#TREATMENTS[@]};
+
+# Function: Help
 # ----------------------------------------------------------------------------
 
 function help {
 	echo;
-	echo "$(color bd)Conveniently named ANSI escape sequences for your shell scripts.$(color off)";
+	echo "$(color bd)Conveniently named ANSI escape sequences for your shell scripts.$(color)";
 	echo;
 	echo 'Usage:';
-	echo "$(color bd)color$(color off) [b]$(color ul)fgcolor$(color off) [$(color ul)bgcolor$(color off)]";
-	echo "$(color bd)color$(color off) [ bd | bold | ul | underline | bk | blink | rv | reversevideo | off ]";
-	echo "$(color bd)color$(color off) list";
+	echo "$(color bd)color$(color) [$(color ul)treatment]$(color) [[lt]$(color ul)fgcolor$(color)] [$(color ul)bgcolor$(color)]";
+	echo "$(color bd)color$(color) list";
 	echo;
 	echo 'where:';
-	echo -n "$(color ul)fgcolor$(color off) and $(color ul)fgcolor$(color off) are one of ";
-	echo -n "$(color black)black$(color off) ";
-	echo -n "$(color red)red$(color off) ";
-	echo -n "$(color green)green$(color off) ";
-	echo -n "$(color yellow)yellow$(color off) ";
-	echo -n "$(color blue)blue$(color off) ";
-	echo -n "$(color magenta)magenta$(color off) ";
-	echo -n "$(color cyan)cyan$(color off) ";
-	echo -n "$(color white)white$(color off).";
+	echo -n "$(color ul)fgcolor$(color) and $(color ul)fgcolor$(color) are one of ";
+	for ((i=0;i<${NUM_COLORS};i++)); do
+		echo -n "$(color ${COLORS[${i}]})${COLORS[${i}]}$(color) ";
+	done;
 	echo;
-	echo "Preceed the fgcolor with $(color bd)b$(color off) to use a bold color."
-	echo "$(color bd)color bd$(color off) and $(color bd)color bold$(color off) turn on $(color bd)bold$(color off).";
-	echo "$(color bd)color ft$(color off) and $(color bd)color faint$(color off) turn on $(color ft)faint$(color off).";
-	echo "$(color bd)color st$(color off) and $(color bd)color standout$(color off) turn on $(color ft)standout$(color off).";
-	echo "$(color bd)color ul$(color off) and $(color bd)color underline$(color off) turn on $(color ul)underline$(color off).";
-	echo "$(color bd)color bk$(color off) and $(color bd)color blink$(color off) turn on $(color bk)blink$(color off).";
-	echo "$(color bd)color rv$(color off) and $(color bd)color reversevideo$(color off) turn on $(color rv)reversevideo$(color off).";
-	echo "$(color bd)color in$(color off) and $(color bd)color invisible$(color off) turn on $(color in)invisible$(color off).";
-	echo "$(color bd)color off$(color off) resets to default colors and text treatments.";
-	echo "$(color bd)color list$(color off) displays all possible color combinations.";
+	echo -n "$(color ul)treatment$(color) can be any of ";
+	for ((i=0;i<${NUM_TREATMENTS};i++)); do
+		echo -n "$(color ${TREATMENTS[${i}]})${TREATMENTS[${i}]}$(color) ";
+	done;
 	echo;
-	echo 'Example:';
-	echo '  echo "$(color bred yellow) Color $(color off)"';
+	echo "Preceed the $(color ul)fgcolor$(color) with $(color bd)lt$(color) to use a bold color."
+	echo "$(color bd)color off$(color) or $(color bd)color$(color) resets to default colors and text treatments.";
+	echo "$(color bd)color list$(color) displays all possible color combinations.";
+	echo;
+	echo 'Examples:';
+	echo '  echo "$(color ul)Underlined text$(color off)"';
 	echo 'results in:';
-	echo "  $(color bred yellow) Color $(color off)";
+	echo "  $(color ul)Underlined text$(color off)";
+	echo;
+	echo '  echo "Make $(color rv)this$(color nm) reverse video text$(color off)"';
+	echo 'results in:';
+	echo "  Make $(color rv)this$(color nm) reverse video text$(color off)";
+	echo;
+	echo '  echo "$(color white blue) White text on a blue background $(color)"';
+	echo 'results in:';
+	echo "  $(color white blue) White text on a blue background $(color)";
+	echo;
+	echo '  echo "$(color ltyellow green) lt prefix on the yellow text text $(color off)"';
+	echo 'results in:';
+	echo "  $(color ltyellow green) lt prefix on the yellow text text $(color off)";
+	echo;
+	echo '  echo "$(color bold blink red yellow) Blinking bold red text on a yellow background $(color)"';
+	echo 'results in:';
+	echo "  $(color bold blink red yellow) Blinking bold red text on a yellow background $(color)";
 	echo;
 	echo;
 	echo -n "Note that results may vary with these standard ANSI escape sequences because of the different configurations of terminal emulators. ";
-	echo "Colors seem to work reliably. Bold and underline work less so. Blink and reverse video I've seen working but the rest I have not.";
 	echo;
 	exit 1;
 }
-if [[ "$1" = '-h' || "$1" = '--help' ]]; then help; fi;
+
+# Function: List text treatments and colors
+# ----------------------------------------------------------------------------
 
 function list {
 
 	echo;
-	echo "$(color bold)These are the possible combinations of colors I can generate. ";
-	echo "Since terminal color settings vary, $(color underline)the expected output may vary$(color off)$(color bold).$(color off)";
+	echo "$(color bd)These are the possible combinations of colors I can generate. ";
+	echo "$(color nm)Since terminal color settings vary, $(color ul)the expected output may vary$(color).";
 	echo;
 	
-	for bg in black red green yellow blue magenta cyan white; do
-		echo "$bg:";
-			for fg in black red green yellow blue magenta cyan white; do
-				echo -n "$(color $fg $bg)  $fg  $(color off) ";
+	for ((bg=0;bg<${NUM_COLORS};bg++)); do
+		echo "${COLORS[${bg}]}:";
+			for ((fg=0;fg<${NUM_COLORS};fg++)); do
+				echo -n "$(color ${COLORS[${fg}]} ${COLORS[${bg}]}) ${COLORS[${fg}]} $(color) ";
 			done;
 			echo;
-			for fg in bblack bred bgreen byellow bblue bmagenta bcyan bwhite; do
-				echo -n "$(color $fg $bg) $fg  $(color off) ";
-			done;
 		echo;
 	done;
 	
 	exit 1;
 }
-if [ "$1" = 'list' ]; then list; fi;
 
+# Function: Test if color
+# ----------------------------------------------------------------------------
+
+function _isColor () {
+  if [ -n "$1" ]; then
+	  for ((i=0;i<${NUM_COLORS};i++)); do
+	  	normalize=${1#lt};
+	    if [ "$normalize" = ${COLORS[${i}]} ]; then return 1; fi;
+		done;
+	fi;
+	return 0;
+}
+
+# Function: Test if text treatment
+# ----------------------------------------------------------------------------
+
+function _isTreatment () {
+  if [ -n "$1" ]; then
+	  for ((i=0;i<${NUM_TREATMENTS};i++)); do
+	    if [ "$1" = ${TREATMENTS[${i}]} ]; then return 1; fi;
+		done;
+		if [ "$1" = off ]; then return 1; fi;
+	fi;
+	return 0;
+}
+
+# Parse input arguments
+# ----------------------------------------------------------------------------
+
+if [[ "$1" = '-h' || "$1" = '--help' ]]; then help; fi;
+if [ "$1" = list ];                      then list; fi;
+if [[ "$1" = off || -z "$1" ]];          then tput sgr0; exit 0; fi;
+
+while (( "$#" )); do
+
+	_isColor $1;
+	if [ $? -eq 1 ]; then
+		if [ "$FG" = '' ]; then 
+			FG=$1;
+		else
+		  if [ "$BG" = '' ]; then
+		  	BG=$1;
+		  else
+		  	error="I see more than two colors. Type color -h for more information.";
+		  fi;
+		fi;
+	else
+		_isTreatment $1;
+		if [ $? -eq 1 ]; then
+			TT=("${TT[@]}" $1);
+		else
+			error="I don't recognize '$1'. Type color -h for more information.";
+		fi;
+	fi;
+	
+	shift;
+	
+done;
+
+if [ "$error" != '' ]; then
+	echo $(color bold red)color: $error$(color); exit 1;
+fi;
 
 # Text treatments
 # ----------------------------------------------------------------------------
-if [[ "$1" = nm || "$1" = normal ]];       then echo -en '\033[0m'; exit 0; fi;
-if [[ "$1" = bd || "$1" = bold ]];         then echo -en '\033[1m'; exit 0; fi;
-if [[ "$1" = ft || "$1" = faint ]];        then echo -en '\033[2m'; exit 0; fi;
-if [[ "$1" = st || "$1" = standout ]];     then echo -en '\033[3m'; exit 0; fi;
-if [[ "$1" = ul || "$1" = underline ]];    then echo -en '\033[4m'; exit 0; fi;
-if [[ "$1" = bk || "$1" = blink ]];        then echo -en '\033[5m'; exit 0; fi;
-if [[ "$1" = rv || "$1" = reversevideo ]]; then echo -en '\033[7m'; exit 0; fi;
-if [[ "$1" = iv || "$1" = invisible ]];    then echo -en '\033[8m'; exit 0; fi;
 
-# Switch back to 'normal'
-# ----------------------------------------------------------------------------
-if [ "$1" = off ]; then tput sgr0; exit 0; fi;
+for ((i=0;i<${#TT[@]};i++)); do
+	if [[ "${TT[${i}]}" = nm || "${TT[${i}]}" = normal ]];       then codes=("${codes[@]}" 0); fi;
+	if [[ "${TT[${i}]}" = bd || "${TT[${i}]}" = bold ]];         then codes=("${codes[@]}" 1); fi;
+	if [[ "${TT[${i}]}" = ft || "${TT[${i}]}" = faint ]];        then codes=("${codes[@]}" 2); fi;
+	if [[ "${TT[${i}]}" = st || "${TT[${i}]}" = standout ]];     then codes=("${codes[@]}" 3); fi;
+	if [[ "${TT[${i}]}" = ul || "${TT[${i}]}" = underline ]];    then codes=("${codes[@]}" 4); fi;
+	if [[ "${TT[${i}]}" = bk || "${TT[${i}]}" = blink ]];        then codes=("${codes[@]}" 5); fi;
+	if [[ "${TT[${i}]}" = rv || "${TT[${i}]}" = reversevideo ]]; then codes=("${codes[@]}" 7); fi;
+	if [[ "${TT[${i}]}" = iv || "${TT[${i}]}" = invisible ]];    then codes=("${codes[@]}" 8); fi;
+done;
 
 # Forground colors
 # ----------------------------------------------------------------------------
-if [ "$1" = black ];   then fg=0';'30; fi; 
-if [ "$1" = red ];     then fg=0';'31; fi;
-if [ "$1" = green ];   then fg=0';'32; fi;
-if [ "$1" = yellow ];  then fg=0';'33; fi;
-if [ "$1" = blue ];    then fg=0';'34; fi;
-if [ "$1" = magenta ]; then fg=0';'35; fi;
-if [ "$1" = cyan ];    then fg=0';'36; fi;
-if [ "$1" = white ];   then fg=0';'37; fi;
-if [ "$1" = bblack ];  then fg=1';'30; fi; 
-if [ "$1" = bred ];    then fg=1';'31; fi;
-if [ "$1" = bgreen ];  then fg=1';'32; fi;
-if [ "$1" = byellow ]; then fg=1';'33; fi;
-if [ "$1" = bblue ];   then fg=1';'34; fi;
-if [ "$1" = bmagenta ];then fg=1';'35; fi;
-if [ "$1" = bcyan ];   then fg=1';'36; fi;
-if [ "$1" = bwhite ];  then fg=1';'37; fi;
+
+if [ `expr "$FG" : 'lt'` -eq 2 ]; then codes=("${codes[@]}" 1); fi;
+
+if [ "$FG" = black ];   then codes=("${codes[@]}" 30); fi;
+if [ "$FG" = red ];     then codes=("${codes[@]}" 31); fi;
+if [ "$FG" = green ];   then codes=("${codes[@]}" 32); fi;
+if [ "$FG" = yellow ];  then codes=("${codes[@]}" 33); fi;
+if [ "$FG" = blue ];    then codes=("${codes[@]}" 34); fi;
+if [ "$FG" = magenta ]; then codes=("${codes[@]}" 35); fi;
+if [ "$FG" = cyan ];    then codes=("${codes[@]}" 36); fi;
+if [ "$FG" = white ];   then codes=("${codes[@]}" 37); fi;
 
 # Background colors
 # ----------------------------------------------------------------------------
-if [ "$2" = black ];   then bg=40; fi; 
-if [ "$2" = red ];     then bg=41; fi;
-if [ "$2" = green ];   then bg=42; fi;
-if [ "$2" = yellow ];  then bg=43; fi;
-if [ "$2" = blue ];    then bg=44; fi;
-if [ "$2" = magenta ]; then bg=45; fi;
-if [ "$2" = cyan ];    then bg=46; fi;
-if [ "$2" = white ];   then bg=47; fi;
 
-code='\033['$fg;
-if [ "$2" != '' ]; then code=${code}';'$bg; fi;
-code=${code}m;
+if [ "$BG" = black ];   then codes=("${codes[@]}" 40); fi;
+if [ "$BG" = red ];     then codes=("${codes[@]}" 41); fi;
+if [ "$BG" = green ];   then codes=("${codes[@]}" 42); fi;
+if [ "$BG" = yellow ];  then codes=("${codes[@]}" 43); fi;
+if [ "$BG" = blue ];    then codes=("${codes[@]}" 44); fi;
+if [ "$BG" = magenta ]; then codes=("${codes[@]}" 45); fi;
+if [ "$BG" = cyan ];    then codes=("${codes[@]}" 46); fi;
+if [ "$BG" = white ];   then codes=("${codes[@]}" 47); fi;
 
-echo -en $code;
+# Assemble and echo the ANSI escape sequence
+# ----------------------------------------------------------------------------
+
+for ((i=0;i<${#codes[@]};i++)); do
+	if [ "$seq" != '' ]; then seq=$seq';'; fi;
+	seq=$seq${codes[${i}]};
+done;
+
+echo -en '\033['${seq}m;
 
 exit 0;
