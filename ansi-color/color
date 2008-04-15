@@ -2,15 +2,14 @@
 # ----------------------------------------------------------------------------
 # @file color
 # Return ANSI color escape sequences.
-# Ref: http://www.faqs.org/docs/abs/HTML/colorizing.html,
-# http://isthe.com/chongo/tech/comp/ansi_escapes.html
+# http://en.wikipedia.org/wiki/ANSI_escape_code
 # Inspired by Moshe Jacobson <moshe@runslinux.net>
 # @author Alister Lewis-Bowen [alister@different.com]
 # ----------------------------------------------------------------------------
 
 COLORS=( black red green yellow blue magenta cyan white );
 NUM_COLORS=${#COLORS[@]};
-TREATMENTS=( nm normal bd bold ft faint st standout ul underline bk blink rv reversevideo iv invisible );
+TREATMENTS=( nm normal bd bold ft faint it italic ul underline bk blink fb fastblink rv reverse iv invisible );
 NUM_TREATMENTS=${#TREATMENTS[@]};
 
 # Function: Help
@@ -35,7 +34,7 @@ function help {
 		echo -n "$(color ${TREATMENTS[${i}]})${TREATMENTS[${i}]}$(color) ";
 	done;
 	echo;
-	echo "Preceed the $(color ul)fgcolor$(color) with $(color bd)lt$(color) to use a bold color."
+	echo "Preceed the $(color ul)fgcolor$(color) with $(color bd)lt$(color) to use a light color."
 	echo "$(color bd)color off$(color) or $(color bd)color$(color) resets to default colors and text treatments.";
 	echo "$(color bd)color list$(color) displays all possible color combinations.";
 	echo;
@@ -114,6 +113,13 @@ function _isTreatment () {
 	return 0;
 }
 
+# Function: Push code onto the escape sequence array
+# ----------------------------------------------------------------------------
+
+function _pushcode () { 
+	codes=("${codes[@]}" $1); 
+}
+
 # Parse input arguments
 # ----------------------------------------------------------------------------
 
@@ -151,45 +157,54 @@ if [ "$error" != '' ]; then
 	echo $(color bold red)color: $error$(color); exit 1;
 fi;
 
-# Text treatments
+# Insert text treatments into the escape sequence
 # ----------------------------------------------------------------------------
 
 for ((i=0;i<${#TT[@]};i++)); do
-	if [[ "${TT[${i}]}" = nm || "${TT[${i}]}" = normal ]];       then codes=("${codes[@]}" 0); fi;
-	if [[ "${TT[${i}]}" = bd || "${TT[${i}]}" = bold ]];         then codes=("${codes[@]}" 1); fi;
-	if [[ "${TT[${i}]}" = ft || "${TT[${i}]}" = faint ]];        then codes=("${codes[@]}" 2); fi;
-	if [[ "${TT[${i}]}" = st || "${TT[${i}]}" = standout ]];     then codes=("${codes[@]}" 3); fi;
-	if [[ "${TT[${i}]}" = ul || "${TT[${i}]}" = underline ]];    then codes=("${codes[@]}" 4); fi;
-	if [[ "${TT[${i}]}" = bk || "${TT[${i}]}" = blink ]];        then codes=("${codes[@]}" 5); fi;
-	if [[ "${TT[${i}]}" = rv || "${TT[${i}]}" = reversevideo ]]; then codes=("${codes[@]}" 7); fi;
-	if [[ "${TT[${i}]}" = iv || "${TT[${i}]}" = invisible ]];    then codes=("${codes[@]}" 8); fi;
+
+	case "${TT[${i}]}" in
+		nm | normal )      _pushcode 0;;
+		bd | bold )        _pushcode 1;;
+		ft | faint )       _pushcode 2;;
+		it | italic )      _pushcode 3;;
+		ul | underline)    _pushcode 4;;
+		bl | blink)        _pushcode 5;;
+		fb | fastblink)    _pushcode 6;;
+		rv | reversevideo) _pushcode 7;;
+		iv | invisible)    _pushcode 8;;
+	esac;
+
 done;
 
-# Forground colors
+# Insert foreground colors into the escape sequence
 # ----------------------------------------------------------------------------
 
-if [ `expr "$FG" : 'lt'` -eq 2 ]; then codes=("${codes[@]}" 1); fi;
+if [ `expr "$FG" : 'lt'` -eq 2 ]; then _pushcode 2; fi;
 
-if [ "$FG" = black ];   then codes=("${codes[@]}" 30); fi;
-if [ "$FG" = red ];     then codes=("${codes[@]}" 31); fi;
-if [ "$FG" = green ];   then codes=("${codes[@]}" 32); fi;
-if [ "$FG" = yellow ];  then codes=("${codes[@]}" 33); fi;
-if [ "$FG" = blue ];    then codes=("${codes[@]}" 34); fi;
-if [ "$FG" = magenta ]; then codes=("${codes[@]}" 35); fi;
-if [ "$FG" = cyan ];    then codes=("${codes[@]}" 36); fi;
-if [ "$FG" = white ];   then codes=("${codes[@]}" 37); fi;
+case "$FG" in
+	black)   _pushcode 30;;
+	red)     _pushcode 31;;
+	green)   _pushcode 32;;
+	yellow)  _pushcode 33;;
+	blue)    _pushcode 34;;
+	magenta) _pushcode 35;;
+	cyan)    _pushcode 36;;
+	white)   _pushcode 37;;
+esac;
 
-# Background colors
+# Insert background colors into the escape sequence
 # ----------------------------------------------------------------------------
 
-if [ "$BG" = black ];   then codes=("${codes[@]}" 40); fi;
-if [ "$BG" = red ];     then codes=("${codes[@]}" 41); fi;
-if [ "$BG" = green ];   then codes=("${codes[@]}" 42); fi;
-if [ "$BG" = yellow ];  then codes=("${codes[@]}" 43); fi;
-if [ "$BG" = blue ];    then codes=("${codes[@]}" 44); fi;
-if [ "$BG" = magenta ]; then codes=("${codes[@]}" 45); fi;
-if [ "$BG" = cyan ];    then codes=("${codes[@]}" 46); fi;
-if [ "$BG" = white ];   then codes=("${codes[@]}" 47); fi;
+case "$BG" in
+	black)   _pushcode 40;;
+	red)     _pushcode 41;;
+	green)   _pushcode 42;;
+	yellow)  _pushcode 43;;
+	blue)    _pushcode 44;;
+	magenta) _pushcode 45;;
+	cyan)    _pushcode 46;;
+	white)   _pushcode 47;;
+esac;
 
 # Assemble and echo the ANSI escape sequence
 # ----------------------------------------------------------------------------
