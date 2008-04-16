@@ -144,7 +144,7 @@ while (( "$#" )); do
 	else
 		_isEffect $1;
 		if [ $? -eq 1 ]; then
-			TT=("${TT[@]}" $1);
+			TE=("${TE[@]}" $1);
 		else
 			error="I don't recognize '$1'. Type color -h for more information.";
 		fi;
@@ -161,9 +161,9 @@ fi;
 # Insert text effects into the escape sequence
 # ----------------------------------------------------------------------------
 
-for ((i=0;i<${#TT[@]};i++)); do
+for ((i=0;i<${#TE[@]};i++)); do
 
-	case "${TT[${i}]}" in
+	case "${TE[${i}]}" in
 		nm | normal )      _pushcode 0;;
 		bd | bold )        _pushcode 1;;
 		ft | faint )       _pushcode 2;;
