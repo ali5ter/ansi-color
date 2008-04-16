@@ -17,7 +17,7 @@ NUM_EFFECTS=${#EFFECTS[@]};
 
 function help {
 	echo;
-	echo "$(color bd)Conveniently named ANSI escape sequences for your shell scripts.$(color)";
+	echo "$(color bd)Color and format your shell script output with minimal effort.$(color)";
 	echo;
 	echo 'Usage:';
 	echo "$(color bd)color$(color) [ $(color ul)effect$(color) ] [ [lt]$(color ul)fgcolor$(color) ] [ $(color ul)bgcolor$(color) ]";
