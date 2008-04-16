@@ -9,8 +9,8 @@
 
 COLORS=( black red green yellow blue magenta cyan white );
 NUM_COLORS=${#COLORS[@]};
-TREATMENTS=( nm normal bd bold ft faint it italic ul underline bk blink fb fastblink rv reverse iv invisible );
-NUM_TREATMENTS=${#TREATMENTS[@]};
+EFFECTS=( nm normal bd bold ft faint it italic ul underline bk blink fb fastblink rv reverse iv invisible );
+NUM_EFFECTS=${#EFFECTS[@]};
 
 # Function: Help
 # ----------------------------------------------------------------------------
@@ -20,8 +20,9 @@ function help {
 	echo "$(color bd)Conveniently named ANSI escape sequences for your shell scripts.$(color)";
 	echo;
 	echo 'Usage:';
-	echo "$(color bd)color$(color) [$(color ul)treatment]$(color) [[lt]$(color ul)fgcolor$(color)] [$(color ul)bgcolor$(color)]";
+	echo "$(color bd)color$(color) [ $(color ul)effect$(color) ] [ [lt]$(color ul)fgcolor$(color) ] [ $(color ul)bgcolor$(color) ]";
 	echo "$(color bd)color$(color) list";
+	echo "$(color bd)color$(color) [ -h | --help ]";
 	echo;
 	echo 'where:';
 	echo -n "$(color ul)fgcolor$(color) and $(color ul)fgcolor$(color) are one of ";
@@ -29,13 +30,13 @@ function help {
 		echo -n "$(color ${COLORS[${i}]})${COLORS[${i}]}$(color) ";
 	done;
 	echo;
-	echo -n "$(color ul)treatment$(color) can be any of ";
-	for ((i=0;i<${NUM_TREATMENTS};i++)); do
-		echo -n "$(color ${TREATMENTS[${i}]})${TREATMENTS[${i}]}$(color) ";
+	echo -n "$(color ul)effect$(color) can be any of ";
+	for ((i=0;i<${NUM_EFFECTS};i++)); do
+		echo -n "$(color ${EFFECTS[${i}]})${EFFECTS[${i}]}$(color) ";
 	done;
 	echo;
 	echo "Preceed the $(color ul)fgcolor$(color) with $(color bd)lt$(color) to use a light color."
-	echo "$(color bd)color off$(color) or $(color bd)color$(color) resets to default colors and text treatments.";
+	echo "$(color bd)color off$(color) or $(color bd)color$(color) resets to default colors and text effect.";
 	echo "$(color bd)color list$(color) displays all possible color combinations.";
 	echo;
 	echo 'Examples:';
@@ -65,7 +66,7 @@ function help {
 	exit 1;
 }
 
-# Function: List text treatments and colors
+# Function: List colors combinations
 # ----------------------------------------------------------------------------
 
 function list {
@@ -100,13 +101,13 @@ function _isColor () {
 	return 0;
 }
 
-# Function: Test if text treatment
+# Function: Test if text effect
 # ----------------------------------------------------------------------------
 
-function _isTreatment () {
+function _isEffect () {
   if [ -n "$1" ]; then
-	  for ((i=0;i<${NUM_TREATMENTS};i++)); do
-	    if [ "$1" = ${TREATMENTS[${i}]} ]; then return 1; fi;
+	  for ((i=0;i<${NUM_EFFECTS};i++)); do
+	    if [ "$1" = ${EFFECTS[${i}]} ]; then return 1; fi;
 		done;
 		if [ "$1" = off ]; then return 1; fi;
 	fi;
@@ -141,7 +142,7 @@ while (( "$#" )); do
 		  fi;
 		fi;
 	else
-		_isTreatment $1;
+		_isEffect $1;
 		if [ $? -eq 1 ]; then
 			TT=("${TT[@]}" $1);
 		else
@@ -157,7 +158,7 @@ if [ "$error" != '' ]; then
 	echo $(color bold red)color: $error$(color); exit 1;
 fi;
 
-# Insert text treatments into the escape sequence
+# Insert text effects into the escape sequence
 # ----------------------------------------------------------------------------
 
 for ((i=0;i<${#TT[@]};i++)); do

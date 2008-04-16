@@ -1,0 +1,71 @@
+INSTALLATION
+------------
+
+Since it is written in bash script, this color command should work on most, if
+not all terminal emulators that run /bin/bash.
+
+If you're not packaging this script into another project, simply ensure this
+script is executable, using something like 'chmod 755 color', and place it into
+a directory included within your PATH environment variable.
+
+USAGE
+-----
+
+color [ effect ] [ [ lt ] fgcolor ] [ bgcolor ]
+
+color list
+
+color [ -h | --help ]
+
+where:
+
+fgcolor and fgcolor are one of black, red, green, yellow, blue, magenta, cyan 
+or white.
+
+effect can be any of [ nm | normal ], [ bd | bold ], [ ft | faint ], 
+[ it | italic ], [ ul | underline ], [ bk | blink ], [ fb | fastblink ], 
+[ rv | reverse ], [ iv | invisible ]
+
+Preceed the fgcolor with lt to use a light color -- the light or faint 
+intensity effect is not commonly implemented within terminal emulators 
+or consoles.
+
+color off or just color resets to default colors and text effects.
+
+color list displays all possible color combinations. 
+
+EXAMPLES
+--------
+
+  echo "$(color ul)Underlined text$(color off)"
+
+  echo "Make $(color rv)this$(color nm) reverse video text"
+
+  echo "$(color white blue) White text on a blue background $(color)"
+
+  echo "$(color ltyellow green) lt prefix on the yellow text text $(color off)"
+
+  echo "$(color bold red yellow blink) Blinking bold red text on a yellow 
+  background $(color)"
+
+Note that results may vary with these standard ANSI escape sequences because of 
+the different configurations of terminal emulators. 
+
+INSPIRATION & CREDIT
+--------------------
+
+This script was quickly written after I lost the source for Moshe Jacobson's 
+color command. Being compiled, his creation was much quicker but the binary was 
+not portable across the platforms I used. I wrote this in shell script figuring 
+that it would work across the widest selection of command lines.
+
+While the syntax is compatible with Moshe's command, I wanted to add the 
+ability to use multiple text effects and colors in one invocation and add a few 
+more ANSI escape sequences.
+
+Many thanks to Moshe Jacobson. 
+
+AUTHOR
+------
+
+Alister Lewis-Bowen <fedback@different.com> // different.com
