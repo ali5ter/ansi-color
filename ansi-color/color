@@ -114,8 +114,8 @@ function list {
 
 function _isColor () {
   if [ -n "$1" ]; then
+  	local normalize=${1#lt};
 	  for ((i=0;i<${NUM_COLORS};i++)); do
-	  	normalize=${1#lt};
 	    if [ "$normalize" = ${COLORS[${i}]} ]; then return 1; fi;
 		done;
 	fi;
