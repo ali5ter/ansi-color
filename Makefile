@@ -21,4 +21,4 @@ binary:
 	$(MAKE) DEBUILD_OPTS="" build
 	
 ppa: package
-	dput ppa `ls -tl ansi-color-$(VERSION)*.changes | head -n 1 | tail -n 1 | awk '{print $8}'`
+	dput ppa `ls -tl ansi-color_$(VERSION)*.changes | head -n 1 | tail -n 1 | awk '{print $$8}'`
