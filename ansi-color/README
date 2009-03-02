@@ -4,9 +4,16 @@ INSTALLATION
 Since it is written in bash script, this color command should work on most, if
 not all terminal emulators that run /bin/bash.
 
-If you're not packaging this script into another project, simply ensure this
+You can install this script using the supplied Makefile by issuing 'make install'.
+Removal of the script is also a simple 'make remove'.
+
+If you do not have sudo access, simply ensure this
 script is executable, using something like 'chmod 755 color', and place it into
 a directory included within your PATH environment variable.
+
+If you are packaging this script; use 'make VERSION=XXX build' to create archives
+for the XXX version of the script. If you omit the VERSION variable, the version
+will default to "latest".
 
 USAGE
 -----

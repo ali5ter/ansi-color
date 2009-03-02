@@ -1,0 +1,17 @@
+Source: ansi-color
+Section: utils
+Priority: extra
+Maintainer: Iain Lowe <ubuntu@ilowe.net>
+XSBC-Original-Maintainer: Iain Lowe <apt@ilowe.net>
+Build-Depends: debhelper (>= 7), cdbs
+Standards-Version: 3.8.0
+Homepage: http://googlecode.google.com/p/ansi-color
+
+Package: ansi-color
+Architecture: any
+Depends: bash (>=3.2)
+Description: Bash shell script that makes it easy to color and format echo'd text
+ Color is a simple bash shell script that makes it easy to color and format
+ echo'd text. It does this by converting combinations of readable arguments
+ (bold, red, green, underline, etc.) into an ANSI escape sequence that your
+ terminal emulator or console understands. 

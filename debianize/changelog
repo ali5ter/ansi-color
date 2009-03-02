@@ -1,0 +1,5 @@
+ansi-color (0.5-0ubuntu1) intrepid; urgency=low
+
+  * Initial packaging of ansi-color script
+
+ -- Iain Lowe <apt@ilowe.net>  Sun, 01 Mar 2009 15:46:05 -0500
