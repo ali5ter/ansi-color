@@ -1,3 +1,9 @@
+ansi-color (0.6-0ubuntu2) intrepid; urgency=low
+
+  * Repackaged to reflect re-released 0.6
+
+ -- Iain Lowe <apt@ilowe.net>  Sun, 01 Mar 2009 22:05:14 -0500
+
 ansi-color (0.6-0ubuntu1) intrepid; urgency=low
 
   * Renamed debianize to debian so dch works in the root
