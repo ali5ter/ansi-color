@@ -1,6 +1,6 @@
 VERSION=latest
 PACKAGE_NAME=ansi-color-$(VERSION)
-FILES=color README LICENSE Makefile
+FILES=color color.1 README LICENSE Makefile
 O=build
 
 blank:
