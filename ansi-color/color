@@ -46,7 +46,7 @@ function help {
 	echo "$(color bd)color$(color) [ -h | --help ]";
 	echo;
 	echo 'where:';
-	echo -n "$(color ul)fgcolor$(color) and $(color ul)fgcolor$(color) are one of ";
+	echo -n "$(color ul)fgcolor$(color) and $(color ul)bgcolor$(color) are one of ";
 	for ((i=0;i<${NUM_COLORS};i++)); do
 		echo -n "$(color ${COLORS[${i}]})${COLORS[${i}]}$(color) ";
 	done;

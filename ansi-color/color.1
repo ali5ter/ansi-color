@@ -1,14 +1,76 @@
 .TH color 1 "Feb 2009" Linux "User Manuals"
 .SH NAME
-color - simple bash script to 
+color - script to color and format echo'd text
 .SH SYNOPSIS
-td [rm|ls|clear] <args>
+.B color
+[ effect ] [ [ lt ] fgcolor ] [ bgcolor ]
+
+.B color
+list
+
+.B color
+[ -h | --help ] 
+
+where:
+
+.I fgcolor
+and
+.B bgcolor
+are one of black, red, green, yellow, blue, magenta, cyan or white.
+
+.I effect
+can be any of [ nm | normal ], [ bd | bold ], [ ft | faint ], [ it | italic ], [ ul | underline ], [ bk | blink ], [ fb | 
+fastblink ], [ rv | reverse ], [ iv | invisible ]
+
+Preceed the
+.I fgcolor
+with
+.I lt
+to use a light color -- the light or faint intensity effect is not commonly implemented within terminal 
+emulators or consoles.
+
+.B color off
+or just
+.B color
+resets to default colors and text effects.
+
+.B color list
+displays all possible color combinations.
+
+.SH EXAMPLES
+
+.B echo
+"$(color ul)Underlined text$(color off)"
+
+.B echo
+"Make $(color rv)this$(color nm) reverse video text"
+
+.B echo
+"$(color white blue) White text on a blue background $(color)"
+
+.B echo
+"$(color ltyellow green) lt prefix on the yellow text text $(color off)"
+
+.B echo 
+"$(color bold red yellow blink) Blinking bold red text on a yellow background $(color)"
+
+.SH NOTICES
+
+Results may vary with these standard ANSI escape sequences because of the different configurations of terminal emulators. 
+
 .SH DESCRIPTION
-.B td
+.B color
 is a really cool litte app
 .SH FILES
-.I /usr/bin/td
+.I /usr/bin/color
+
+.I /usr/share/man/man1/color.1
+.SH BUGS
+
+All bugs should be reported via this package's issue tracker at
+the project website (see below).
+
 .SH AUTHOR
-Iain Lowe <me@ilowe.net>
+Alister Lewis-Bowen <alister.lewisbowen@gmail.com>
 .SH "SEE ALSO"
-http://code.ilowe.net/software/td
+.I Project Website - http://code.google.com/p/ansi-color
